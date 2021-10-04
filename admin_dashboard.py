@@ -105,11 +105,9 @@ class admin_GUI:
                 else:
                     gender="Female"
 
-                print(f"{first_name},{lastname},{email},{gender},{dob},{contact},{address}")
+                create_db.c.execute(f"INSERT INTO students('first_name','last_name','email','gender','dob','contact','address') VALUES('{first_name}','{lastname}','{email}','{gender}','{dob}','{contact}','{address}')")
+                create_db.conn.commit()
 
-                # query=create_db.c.execute(f"INSERT INTO students('first_name') VALUES('{first_name}')")
-                query=create_db.c.execute(f"INSERT INTO students(first_name) VALUES('{first_name}')")
-                print(query)
 
             Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).grid(row=8, column=0)
             Button(detail_frame_student, text="Update Record", padx=5, pady=5).grid(row=8, column=1)
