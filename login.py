@@ -42,6 +42,7 @@ class login_GUI:
         password = self.passwordEntry.get()
         create_db.c.execute(f"SELECT * from users WHERE username='{username}' AND password='{password}'")
         records = create_db.c.fetchall()
+        create_db.c.close()
         if len(records)==1:
             if records[0][2]==1:
                 print("Student")
@@ -54,6 +55,7 @@ class login_GUI:
                 self.window.destroy()
         else:
             messagebox.showerror(title="Login Error",message="Username or Password is incorrect")
+
 
 
 login_GUI()

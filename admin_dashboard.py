@@ -41,21 +41,9 @@ class admin_GUI:
         preview_pane_instructor =  LabelFrame(tab2,text="View details",font=("Arial",20),border=5,relief=SUNKEN)
         preview_pane_instructor.place(x=570,y=5,width=800,height=800)
 
-
-        stu_first_name = StringVar()
-        stu_last_name = StringVar()
-        stu_email = StringVar()
-        stu_address= StringVar()
-        stu_dOB = StringVar()
-        stu_gender = StringVar()
-        stu_contact = StringVar()
-
-
-
-
-
         gender = ["male","female"]
         styles = ["Waltz", "Jive", "ChaCha", "Samba"]
+        genderInt = IntVar()
 
 
         def fetach_student_details():
@@ -65,43 +53,63 @@ class admin_GUI:
 
 
 
-
         def student_registration():
             Label(detail_frame_student, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
-            stu_entry_firstname=Entry(detail_frame_student, font=("calibri", 15)).grid(row=0, column=1)
+            stu_entry_firstname=Entry(detail_frame_student, font=("calibri", 15))
+            stu_entry_firstname.grid(row=0, column=1)
 
             Label(detail_frame_student, text="Last Name", font=("calibri", 15), padx=20, pady=20).grid(row=1, column=0)
-            stu_entry_lastname=Entry(detail_frame_student, font=("calibri", 15)).grid(row=1, column=1)
+            stu_entry_lastname=Entry(detail_frame_student, font=("calibri", 15))
+            stu_entry_lastname.grid(row=1, column=1)
 
             Label(detail_frame_student, text="Email", font=("calibri", 15), padx=20, pady=20).grid(row=2, column=0)
-            stu_entry_email=Entry(detail_frame_student, font=("calibri", 15)).grid(row=2, column=1)
+            stu_entry_email=Entry(detail_frame_student, font=("calibri", 15))
+            stu_entry_email.grid(row=2, column=1)
 
             Label(detail_frame_student, text="Address", font=("calibri", 15), padx=20, pady=20).grid(row=3, column=0)
-            stu_entry_address=Entry(detail_frame_student, font=("calibri", 15)).grid(row=3, column=1)
+            stu_entry_address=Entry(detail_frame_student, font=("calibri", 15))
+            stu_entry_address.grid(row=3, column=1)
 
             Label(detail_frame_student, text="DOB", font=("calibri", 15), padx=20, pady=20).grid(row=4, column=0)
-            stu_entry_dob=Entry(detail_frame_student, font=("calibri", 15)).grid(row=4, column=1)
+            stu_entry_dob=Entry(detail_frame_student, font=("calibri", 15))
+            stu_entry_dob.grid(row=4, column=1)
 
             Label(detail_frame_student, text="Gender", font=("calibri", 15), padx=10, pady=20).grid(row=5, column=0)
 
-            radiobtn = Radiobutton(detail_frame_student, text='male', value=0)
+            radiobtn = Radiobutton(detail_frame_student, text='male', value=1,variable=genderInt)
             radiobtn.grid(row=5, column=1, sticky="NW", pady=10)
 
-            radiobtn = Radiobutton(detail_frame_student, text='female', value=1)
-            radiobtn.grid(row=5, column=1, sticky="SW")
+            radiobtn2 = Radiobutton(detail_frame_student, text='female', value=0,variable=genderInt)
+            radiobtn2.grid(row=5, column=1, sticky="SW")
 
             Label(detail_frame_student, text="Contact No", font=("calibri", 15), padx=20, pady=20).grid(row=6, column=0)
-            stu_entry_contact=Entry(detail_frame_student, font=("calibri", 15)).grid(row=6, column=1)
+            stu_entry_contact=Entry(detail_frame_student, font=("calibri", 15))
+            stu_entry_contact.grid(row=6, column=1)
 
             Label(detail_frame_student, text="", font=("calibri", 15), padx=10, pady=5).grid(row=7, column=0)
 
             def add_student_record():
-                print(stu_entry_firstname.get())
-                print(stu_entry_lastname.get())
-                print(stu_entry_contact.get())
-                print(stu_entry_dob.get())
-                print(stu_entry_address.get())
-                print(stu_entry_email.get())
+
+                first_name = stu_entry_firstname.get()
+                lastname = stu_entry_lastname.get()
+                email = stu_entry_email.get()
+                gender = ''
+                dob = stu_entry_dob.get()
+                contact = stu_entry_contact.get()
+                address = stu_entry_address.get()
+
+
+
+                if genderInt.get()==1:
+                    gender="Male"
+                else:
+                    gender="Female"
+
+                print(f"{first_name},{lastname},{email},{gender},{dob},{contact},{address}")
+
+                # query=create_db.c.execute(f"INSERT INTO students('first_name') VALUES('{first_name}')")
+                query=create_db.c.execute(f"INSERT INTO students(first_name) VALUES('{first_name}')")
+                print(query)
 
             Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).grid(row=8, column=0)
             Button(detail_frame_student, text="Update Record", padx=5, pady=5).grid(row=8, column=1)
