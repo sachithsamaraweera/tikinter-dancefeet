@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
 from database_conn import create_db
-from instructor_dashboard import ins_GUI
 from admin_dashboard import admin_GUI
 create_db()
 

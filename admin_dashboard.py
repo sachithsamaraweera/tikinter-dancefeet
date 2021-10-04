@@ -1,50 +1,164 @@
 from tkinter import *
+from tkinter import ttk
+from database_conn import create_db
 
 class admin_GUI:
     def __init__(self):
         window = Tk()
-        window.geometry("1000x800")
+        window.geometry("1400x1000")
         window.title("Admin")
-        title_frame = Frame(window,bg="#F5C2C1",relief=SUNKEN)
-        left_frame = Frame(window,bg="#FFF0C1",relief=SUNKEN)
-        right_frame = Frame(window,bg="#D2E2FB",relief=SUNKEN)
-        top_frame = Frame(window,bg="#CCE4CA",relief=SUNKEN)
+
+        title = Label(window,text="DanceFeet Management",font=("Arial",25),border=5,relief=SUNKEN,bg="#F5C2C1")
+        title.pack(side=TOP,fill=X)
+
+        mainframe = Frame(window,border=5,relief=SUNKEN)
+        mainframe.place(x=0, y=50, width=1400, height=1000)
+
+        notebook = ttk.Notebook(mainframe)
+        tab1 = Frame(notebook)
+        tab2 = Frame(notebook)
+        tab3 = Frame(notebook)
+        notebook.add(tab1, text="Student Registration")
+        notebook.add(tab2, text="Instructor Registration")
+        notebook.add(tab3, text="Lesson Booking")
+        notebook.pack(expand=True, fill="both")
+
+        detail_frame_student =  LabelFrame(tab1,text="Enter details",font=("Arial",20),border=5,relief=SUNKEN)
+        detail_frame_student.place(x=20,y=5,width=500,height=800)
+
+        detail_frame_instructor =  LabelFrame(tab2,text="Enter details",font=("Arial",20),border=5,relief=SUNKEN)
+        detail_frame_instructor.place(x=20,y=5,width=500,height=800)
+
+        detail_frame_lesson_booking =  LabelFrame(tab3,text="Enter details",font=("Arial",20),border=5,relief=SUNKEN)
+        detail_frame_lesson_booking.place(x=20,y=5,width=500,height=800)
+
+        preview_pane_lesson_booking =  LabelFrame(tab3,text="View details",font=("Arial",20),border=5,relief=SUNKEN)
+        preview_pane_lesson_booking.place(x=570,y=5,width=800,height=800)
+
+        preview_pane =  LabelFrame(tab1,text="View details",font=("Arial",20),border=5,relief=SUNKEN)
+        preview_pane.place(x=570,y=5,width=800,height=800)
+
+        preview_pane_instructor =  LabelFrame(tab2,text="View details",font=("Arial",20),border=5,relief=SUNKEN)
+        preview_pane_instructor.place(x=570,y=5,width=800,height=800)
 
 
-        Label(title_frame,text="Admin Login",bg="#F5C2C1",font=("calibri",20)).pack()
-
-        title_frame.grid(row=0,column=0,columnspan=2,sticky="nsew",padx=2,pady=2)
-        top_frame.grid(row=1,column=0,columnspan=2,sticky="nsew",padx=2,pady=2)
-        left_frame.grid(row=2,column=0,sticky="nsew",padx=2,pady=2)
-        right_frame.grid(row=2,column=1,sticky="nsew",padx=2,pady=2)
-
-        ############################################################################
-        Button(top_frame,text="Student Management",padx=5,pady=5).pack(side="left")
-        Button(top_frame,text="Instructor Management",padx=5,pady=5).pack(side="left")
-        Button(top_frame,text="Book a Lesson",padx=5,pady=5).pack(side="left")
+        stu_first_name = StringVar()
+        stu_last_name = StringVar()
+        stu_email = StringVar()
+        stu_address= StringVar()
+        stu_dOB = StringVar()
+        stu_gender = StringVar()
+        stu_contact = StringVar()
 
 
-        ###########################################################################
-        Label(left_frame,text="First Name",padx=20,font=("calibri",15)).grid(row=0,column=0)
-        Entry(left_frame,font=("calibri",15)).grid(row=0,column=1)
-
-        Label(left_frame,text="Last Name",font=("calibri",15)).grid(row=1,column=0)
-        Entry(left_frame,font=("calibri",15)).grid(row=1, column=1)
-
-        Label(left_frame,text="Email",font=("calibri",15)).grid(row=2,column=0)
-        Entry(left_frame,font=("calibri",15)).grid(row=2, column=1)
-
-        Label(left_frame,text="Gender",font=("calibri",15)).grid(row=2,column=0)
-        Entry(left_frame,font=("calibri",15)).grid(row=2, column=1)
 
 
-        window.grid_rowconfigure(0,weight=1)
-        window.grid_rowconfigure(1,weight=1)
-        window.grid_rowconfigure(2,weight=10)
-        window.grid_columnconfigure(0,weight=1)
-        window.grid_columnconfigure(1,weight=15)
+
+        gender = ["male","female"]
+        styles = ["Waltz", "Jive", "ChaCha", "Samba"]
+
+
+        def fetach_student_details():
+            create_db.c.execute(f"SELECT * from students")
+            records=create_db.c.fetchall()
+            print(records)
+
+
+
+
+        def student_registration():
+            Label(detail_frame_student, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
+            stu_entry_firstname=Entry(detail_frame_student, font=("calibri", 15)).grid(row=0, column=1)
+
+            Label(detail_frame_student, text="Last Name", font=("calibri", 15), padx=20, pady=20).grid(row=1, column=0)
+            stu_entry_lastname=Entry(detail_frame_student, font=("calibri", 15)).grid(row=1, column=1)
+
+            Label(detail_frame_student, text="Email", font=("calibri", 15), padx=20, pady=20).grid(row=2, column=0)
+            stu_entry_email=Entry(detail_frame_student, font=("calibri", 15)).grid(row=2, column=1)
+
+            Label(detail_frame_student, text="Address", font=("calibri", 15), padx=20, pady=20).grid(row=3, column=0)
+            stu_entry_address=Entry(detail_frame_student, font=("calibri", 15)).grid(row=3, column=1)
+
+            Label(detail_frame_student, text="DOB", font=("calibri", 15), padx=20, pady=20).grid(row=4, column=0)
+            stu_entry_dob=Entry(detail_frame_student, font=("calibri", 15)).grid(row=4, column=1)
+
+            Label(detail_frame_student, text="Gender", font=("calibri", 15), padx=10, pady=20).grid(row=5, column=0)
+
+            radiobtn = Radiobutton(detail_frame_student, text='male', value=0)
+            radiobtn.grid(row=5, column=1, sticky="NW", pady=10)
+
+            radiobtn = Radiobutton(detail_frame_student, text='female', value=1)
+            radiobtn.grid(row=5, column=1, sticky="SW")
+
+            Label(detail_frame_student, text="Contact No", font=("calibri", 15), padx=20, pady=20).grid(row=6, column=0)
+            stu_entry_contact=Entry(detail_frame_student, font=("calibri", 15)).grid(row=6, column=1)
+
+            Label(detail_frame_student, text="", font=("calibri", 15), padx=10, pady=5).grid(row=7, column=0)
+
+            def add_student_record():
+                print(stu_entry_firstname.get())
+                print(stu_entry_lastname.get())
+                print(stu_entry_contact.get())
+                print(stu_entry_dob.get())
+                print(stu_entry_address.get())
+                print(stu_entry_email.get())
+
+            Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).grid(row=8, column=0)
+            Button(detail_frame_student, text="Update Record", padx=5, pady=5).grid(row=8, column=1)
+            Button(detail_frame_student, text="Delete Record", padx=5, pady=5).grid(row=8, column=2)
+
+        student_registration()
+
+
+
+        def instructor_tab():
+            Label(detail_frame_instructor, text="Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
+            Entry(detail_frame_instructor, font=("calibri", 15)).grid(row=0, column=1)
+
+            Label(detail_frame_instructor, text="Password", font=("calibri", 15), padx=20, pady=20).grid(row=1, column=0)
+            Entry(detail_frame_instructor, font=("calibri", 15)).grid(row=1, column=1)
+
+            Label(detail_frame_instructor, text="Gender", font=("calibri", 15), padx=10, pady=20).grid(row=2, column=0)
+
+            radiobtn = Radiobutton(detail_frame_instructor, text='male', value=0)
+            radiobtn.grid(row=2, column=1, sticky="NW", pady=10)
+
+            radiobtn = Radiobutton(detail_frame_instructor, text='female', value=1)
+            radiobtn.grid(row=2, column=1, sticky="SW")
+
+            Label(detail_frame_instructor, text="Styles", font=("calibri", 15), padx=20, pady=20).grid(row=3, column=0)
+            cmb = ttk.Combobox(detail_frame_instructor, value=styles, width=10, font=("calibri", 12))
+            cmb.grid(row=3, column=1)
+            cmb.current(0)
+
+            Label(detail_frame_instructor, text="Tel", font=("calibri", 15), padx=20, pady=20).grid(row=4, column=0)
+            Entry(detail_frame_instructor, font=("calibri", 15)).grid(row=4, column=1)
+
+            Label(detail_frame_instructor, text="H/Rate", font=("calibri", 15), padx=20, pady=20).grid(row=5, column=0)
+            Entry(detail_frame_instructor, font=("calibri", 15)).grid(row=5, column=1)
+
+            Label(detail_frame_instructor, text="Availability", font=("calibri", 15), padx=20, pady=20).grid(row=6,
+                                                                                                             column=0)
+            Entry(detail_frame_instructor, font=("calibri", 15)).grid(row=6, column=1)
+
+            Label(detail_frame_instructor, text="", font=("calibri", 15), padx=10, pady=5).grid(row=7, column=0)
+
+            Button(detail_frame_instructor, text="Add Record", padx=5, pady=5).grid(row=8, column=0)
+            Button(detail_frame_instructor, text="Update Record", padx=5, pady=5).grid(row=8, column=1)
+            Button(detail_frame_instructor, text="Delete Record", padx=5, pady=5).grid(row=8, column=2)
+        instructor_tab()
+
+
+
+        # Button(top_frame,text="Student Management",padx=5,pady=5).pack(side="left")
+        # Button(top_frame,text="Instructor Management",padx=5,pady=5).pack(side="left")
+        # Button(top_frame,text="Book a Lesson",padx=5,pady=5).pack(side="left")
+
+
 
         window.mainloop()
 
+
 admin_GUI()
+
 
