@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from database_conn import create_db
+from tkinter import messagebox
 
 class admin_GUI:
     def __init__(self):
@@ -86,10 +87,18 @@ class admin_GUI:
             stu_entry_contact=Entry(detail_frame_student, font=("calibri", 15))
             stu_entry_contact.grid(row=6, column=1)
 
-            Label(detail_frame_student, text="", font=("calibri", 15), padx=10, pady=5).grid(row=7, column=0)
+            Label(detail_frame_student, text="Styles", font=("calibri", 15), padx=20, pady=20).grid(row=7, column=0)
+            cmb = ttk.Combobox(detail_frame_student, value=styles, width=10, font=("calibri", 12))
+            cmb.grid(row=7, column=1)
+            cmb.current(0)
 
+            Label(detail_frame_student, text="H/rate", font=("calibri", 15), padx=20, pady=20).grid(row=8, column=0)
+            stu_entry_hourly_rate=Entry(detail_frame_student, font=("calibri", 15))
+            stu_entry_hourly_rate.grid(row=8, column=1)
+
+# displaying the tree view
             def display_student_treeview():
-                my_tree = ttk.Treeview(preview_pane)
+                my_tree = ttk.Treeview(preview_pane,height=36)
 
                 # define columns
                 my_tree['columns'] = (
@@ -136,8 +145,28 @@ class admin_GUI:
                     count += 1
                 my_tree.place(x=20, y=20)
 
+# END displaying the tree view
+
+
+# select and fill the entry boxes
+            def select_from_student_treeview():
+                #clear the entry boxes
+                stu_entry_firstname.delete(0,END)
+                stu_entry_lastname.delete(0,END)
+                stu_entry_email.delete(0,END)
+                stu_entry_dob.delete(0,END)
+                stu_entry_contact.delete(0,END)
+                stu_entry_address.delete(0,END)
+                stu_entry_hourly_rate.delete(0,END)
+
+                #Grab record number
+
+                selected = my_tree
+
+
             display_student_treeview()
 
+# adding students to the database
             def add_student_record():
 
                 first_name = stu_entry_firstname.get()
@@ -147,25 +176,48 @@ class admin_GUI:
                 dob = stu_entry_dob.get()
                 contact = stu_entry_contact.get()
                 address = stu_entry_address.get()
-
-
+                hrate = stu_entry_hourly_rate.get()
+                stu_style = cmb.get()
 
                 if genderInt.get()==1:
                     gender="Male"
                 else:
                     gender="Female"
 
-                create_db.c.execute(f"INSERT INTO students('first_name','last_name','email','gender','dob','contact','address') VALUES('{first_name}','{lastname}','{email}','{gender}','{dob}','{contact}','{address}')")
-                create_db.conn.commit()
+                if first_name=='' or lastname=='' or email=='' or dob=='' or contact=='' or address=='' or hrate=='':
+                    messagebox.showerror(title="Error", message="All field must filled")
+                else:
+                    create_db.c.execute(
+                        f"INSERT INTO students('first_name','last_name','email','gender','dob','contact','address',style,hrate) VALUES('{first_name}','{lastname}','{email}','{gender}','{dob}','{contact}','{address}','{stu_style}','{hrate}')")
+                    create_db.conn.commit()
 
-                stu_entry_firstname.delete(0,END)
-                display_student_treeview()
+                    stu_entry_firstname.delete(0, END)
+                    display_student_treeview()
+                    stu_entry_firstname.delete(0, END)
+                    stu_entry_lastname.delete(0, END)
+                    stu_entry_email.delete(0, END)
+                    stu_entry_dob.delete(0, END)
+                    stu_entry_contact.delete(0, END)
+                    stu_entry_address.delete(0, END)
+                    stu_entry_hourly_rate.delete(0, END)
+                    print("Record has been added successfully")
+
+# END adding students to the database
 
 
 
-            Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=600)
-            Button(detail_frame_student, text="Update Record", padx=5, pady=5).place(x=135,y=600)
-            Button(detail_frame_student, text="Delete Record", padx=5, pady=5).place(x=285,y=600)
+
+
+
+
+
+
+
+
+
+            Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=650)
+            Button(detail_frame_student, text="Update Record", padx=5, pady=5).place(x=135,y=650)
+            Button(detail_frame_student, text="Delete Record", padx=5, pady=5).place(x=285,y=650)
 
         student_registration()
 
