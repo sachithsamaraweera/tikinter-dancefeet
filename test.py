@@ -1,23 +1,51 @@
-import tkinter as tk
+from tkinter import *
+from tkinter import ttk
 
-root = tk.Tk()
-root.geometry("900x600")
+from database_conn import create_db
 
-treeview_frame = tk.Frame(root, background="#FFF0C1", bd=1, relief="sunken")
-graph_frame = tk.Frame(root, background="#D2E2FB", bd=1, relief="sunken")
-text_frame = tk.Frame(root, background="#CCE4CA", bd=1, relief="sunken")
-button_frame = tk.Frame(root, background="#F5C2C1", bd=1, relief="sunken")
 
-treeview_frame.grid(row=0, column=0, sticky="nsew", padx=2, pady=2)
-graph_frame.grid(row=1, column=0, sticky="nsew", padx=2, pady=2)
-text_frame.grid(row=0, column=1, rowspan=2, sticky="nsew", padx=2, pady=2)
-button_frame.grid(row=0, column=2, rowspan=2, sticky="nsew", padx=2, pady=2)
+root =  Tk()
+root.title("Test tree view")
+root.geometry("1000x500")
 
-root.grid_rowconfigure(0, weight=3)
-root.grid_rowconfigure(1, weight=2)
+my_tree = ttk.Treeview(root)
 
-root.grid_columnconfigure(0, weight=2)
-root.grid_columnconfigure(1, weight=2)
-root.grid_columnconfigure(2, weight=3)
+#define columns
+my_tree['columns']=("First Name","Last Name","Student ID","Email","Address","DOB","Gender","Contact No")
+
+#format columns
+my_tree.column("#0",width=0,stretch=NO)
+my_tree.column("First Name",anchor=W,width=80)
+my_tree.column("Last Name",anchor=W,width=120)
+my_tree.column("Student ID",anchor=CENTER,width=120)
+my_tree.column("Email",anchor=CENTER,width=120)
+my_tree.column("Address",anchor=CENTER,width=120)
+my_tree.column("DOB",anchor=CENTER,width=120)
+my_tree.column("Gender",anchor=CENTER,width=120)
+my_tree.column("Contact No",anchor=CENTER,width=120)
+
+#creating heading
+my_tree.heading("#0",text="",anchor=CENTER)
+my_tree.heading("First Name",text="First Name",anchor=W)
+my_tree.heading("Last Name",text="Last Name",anchor=W)
+my_tree.heading("Student ID",text="Student ID",anchor=CENTER)
+my_tree.heading("Email",text="Student ID",anchor=CENTER)
+my_tree.heading("Address",text="Email",anchor=CENTER)
+my_tree.heading("DOB",text="DOB",anchor=CENTER)
+my_tree.heading("Gender",text="Gender",anchor=CENTER)
+my_tree.heading("Contact No",text="Contact No",anchor=CENTER)
+
+
+
+create_db.c.execute("SELECT * FROM students")
+records = create_db.c.fetchall()
+
+global count
+count = 0
+
+for record in records:
+    my_tree.insert(parent='', index='end', iid=count, text="", values=(record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7],record[8],record[9]))
+    count+=1
+my_tree.pack()
 
 root.mainloop()
