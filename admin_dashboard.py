@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from database_conn import create_db
 from tkinter import messagebox
+import sqlite3
 
 class admin_GUI:
     def __init__(self):
@@ -96,43 +97,50 @@ class admin_GUI:
             stu_entry_hourly_rate=Entry(detail_frame_student, font=("calibri", 15))
             stu_entry_hourly_rate.grid(row=8, column=1)
 
-# displaying the tree view
-            def display_student_treeview():
-                my_tree = ttk.Treeview(preview_pane,height=36)
 
-                # define columns
-                my_tree['columns'] = (
+# displaying the tree view
+            my_tree = ttk.Treeview(preview_pane,height=36)
+            # define columns
+            my_tree['columns'] = (
                 "Student ID", "First Name", "Last Name", "Email", "Address", "DOB", "Gender", "Contact No", "Style",
                 "H/rate")
 
-                # format columns
-                my_tree.column("#0", width=0, stretch=NO)
-                my_tree.column("Student ID", anchor=CENTER, width=80)
-                my_tree.column("First Name", anchor=W, width=80)
-                my_tree.column("Last Name", anchor=W, width=80)
-                my_tree.column("Email", anchor=CENTER, width=120)
-                my_tree.column("Address", anchor=CENTER, width=120)
-                my_tree.column("DOB", anchor=CENTER, width=80)
-                my_tree.column("Gender", anchor=CENTER, width=80)
-                my_tree.column("Contact No", anchor=CENTER, width=120)
-                my_tree.column("Style", anchor=CENTER, width=80)
-                my_tree.column("H/rate", anchor=CENTER, width=80)
+            # format columns
+            my_tree.column("#0", width=0, stretch=NO)
+            my_tree.column("Student ID", anchor=CENTER, width=80)
+            my_tree.column("First Name", anchor=W, width=80)
+            my_tree.column("Last Name", anchor=W, width=80)
+            my_tree.column("Email", anchor=CENTER, width=120)
+            my_tree.column("Address", anchor=CENTER, width=120)
+            my_tree.column("DOB", anchor=CENTER, width=80)
+            my_tree.column("Gender", anchor=CENTER, width=80)
+            my_tree.column("Contact No", anchor=CENTER, width=120)
+            my_tree.column("Style", anchor=CENTER, width=80)
+            my_tree.column("H/rate", anchor=CENTER, width=80)
 
-                # creating heading
-                my_tree.heading("#0", text="", anchor=CENTER)
-                my_tree.heading("Student ID", text="Student ID", anchor=CENTER)
-                my_tree.heading("First Name", text="First Name", anchor=W)
-                my_tree.heading("Last Name", text="Last Name", anchor=W)
-                my_tree.heading("Email", text="Email", anchor=CENTER)
-                my_tree.heading("Address", text="Address", anchor=CENTER)
-                my_tree.heading("DOB", text="DOB", anchor=CENTER)
-                my_tree.heading("Gender", text="Gender", anchor=CENTER)
-                my_tree.heading("Contact No", text="Contact No", anchor=CENTER)
-                my_tree.heading("Style", text="Style", anchor=CENTER)
-                my_tree.heading("H/rate", text="H/rate", anchor=CENTER)
+            # creating heading
+            my_tree.heading("#0", text="", anchor=CENTER)
+            my_tree.heading("Student ID", text="Student ID", anchor=CENTER)
+            my_tree.heading("First Name", text="First Name", anchor=W)
+            my_tree.heading("Last Name", text="Last Name", anchor=W)
+            my_tree.heading("Email", text="Email", anchor=CENTER)
+            my_tree.heading("Address", text="Address", anchor=CENTER)
+            my_tree.heading("DOB", text="DOB", anchor=CENTER)
+            my_tree.heading("Gender", text="Gender", anchor=CENTER)
+            my_tree.heading("Contact No", text="Contact No", anchor=CENTER)
+            my_tree.heading("Style", text="Style", anchor=CENTER)
+            my_tree.heading("H/rate", text="H/rate", anchor=CENTER)
+            my_tree.place(x=20, y=20)
 
-                create_db.c.execute("SELECT * FROM students")
-                records = create_db.c.fetchall()
+#select record from the treeview
+
+
+#fetch from the database to the tree view
+            def fetch_to_tree():
+                conn = sqlite3.connect('dance_feet.db')
+                c = conn.cursor()
+                c.execute("SELECT * FROM students")
+                records = c.fetchall()
 
                 global count
                 count = 0
@@ -143,14 +151,15 @@ class admin_GUI:
                         record[8],
                         record[9]))
                     count += 1
-                my_tree.place(x=20, y=20)
+
+                    conn.commit()
 
 # END displaying the tree view
 
+            fetch_to_tree()
 
 # select and fill the entry boxes
-            def select_from_student_treeview():
-                #clear the entry boxes
+            def select_record(e):
                 stu_entry_firstname.delete(0,END)
                 stu_entry_lastname.delete(0,END)
                 stu_entry_email.delete(0,END)
@@ -159,16 +168,36 @@ class admin_GUI:
                 stu_entry_address.delete(0,END)
                 stu_entry_hourly_rate.delete(0,END)
 
-                #Grab record number
+                #grab record number
+                selected = my_tree.focus()
+                #grab record values
+                values = my_tree.item(selected,'values')
 
-                selected = my_tree
+                #output to entries
+                stu_entry_firstname.insert(0,values[1])
+                stu_entry_lastname.insert(0,values[2])
+                stu_entry_email.insert(0,values[3])
+                stu_entry_dob.insert(0,values[5])
+                stu_entry_contact.insert(0,values[7])
+                stu_entry_address.insert(0,values[4])
+                stu_entry_hourly_rate.insert(0,values[9])
 
+                if values[6]=="Male":
+                    genderInt.set(1)
+                else:
+                    genderInt.set(0)
 
-            display_student_treeview()
+                if values[8]=="Waltz":
+                    cmb.current(0)
+                elif values[8]=="Jive":
+                    cmb.current(1)
+                elif values[8]=="ChaCha":
+                    cmb.current(2)
+                elif values[8]=="Samba":
+                    cmb.current(3)
 
 # adding students to the database
             def add_student_record():
-
                 first_name = stu_entry_firstname.get()
                 lastname = stu_entry_lastname.get()
                 email = stu_entry_email.get()
@@ -191,8 +220,8 @@ class admin_GUI:
                         f"INSERT INTO students('first_name','last_name','email','gender','dob','contact','address',style,hrate) VALUES('{first_name}','{lastname}','{email}','{gender}','{dob}','{contact}','{address}','{stu_style}','{hrate}')")
                     create_db.conn.commit()
 
+
                     stu_entry_firstname.delete(0, END)
-                    display_student_treeview()
                     stu_entry_firstname.delete(0, END)
                     stu_entry_lastname.delete(0, END)
                     stu_entry_email.delete(0, END)
@@ -200,23 +229,23 @@ class admin_GUI:
                     stu_entry_contact.delete(0, END)
                     stu_entry_address.delete(0, END)
                     stu_entry_hourly_rate.delete(0, END)
+
                     print("Record has been added successfully")
+
+                    #clear tree view table
+                    my_tree.delete(*my_tree.get_children())
+                    #pull data again from database to tree view
+                    fetch_to_tree()
+
+
 
 # END adding students to the database
 
-
-
-
-
-
-
-
-
-
+            my_tree.bind("<ButtonRelease-1>",select_record)
 
 
             Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=650)
-            Button(detail_frame_student, text="Update Record", padx=5, pady=5).place(x=135,y=650)
+            Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=select_record).place(x=135,y=650)
             Button(detail_frame_student, text="Delete Record", padx=5, pady=5).place(x=285,y=650)
 
         student_registration()
@@ -256,7 +285,7 @@ class admin_GUI:
             Label(detail_frame_instructor, text="", font=("calibri", 15), padx=10, pady=5).grid(row=7, column=0)
 
             Button(detail_frame_instructor, text="Add Record", padx=5, pady=5).grid(row=8, column=0)
-            Button(detail_frame_instructor, text="Update Record", padx=5, pady=5).grid(row=8, column=1)
+            Button(detail_frame_instructor, text="Select Record", padx=5, pady=5).grid(row=8, column=1)
             Button(detail_frame_instructor, text="Delete Record", padx=5, pady=5).grid(row=8, column=2)
         instructor_tab()
 
