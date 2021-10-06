@@ -48,11 +48,6 @@ class admin_GUI:
         genderInt = IntVar()
 
 
-        def fetach_student_details():
-            create_db.c.execute(f"SELECT * from students")
-            records=create_db.c.fetchall()
-            print(records)
-
 
 
         def student_registration():
@@ -236,16 +231,37 @@ class admin_GUI:
                     my_tree.delete(*my_tree.get_children())
                     #pull data again from database to tree view
                     fetch_to_tree()
-
-
-
 # END adding students to the database
+
+            def update_student():
+                conn = sqlite3.connect('dance_feet.db')
+                c = conn.cursor()
+
+                first_name = stu_entry_firstname.get()
+                lastname = stu_entry_lastname.get()
+                email = stu_entry_email.get()
+                gender = ''
+                dob = stu_entry_dob.get()
+                contact = stu_entry_contact.get()
+                address = stu_entry_address.get()
+                hrate = stu_entry_hourly_rate.get()
+                stu_style = cmb.get()
+                if genderInt.get()==1:
+                    gender="Male"
+                else:
+                    gender="Female"
+
+                c.execute(f"UPDATE students SET first_name='{first_name}',last_name='{lastname}',email='{email}',dob='{dob}',contact='{contact}',address='{address}',gender='{gender}',style='{stu_style}',hrate='{hrate}' WHERE email='{email}'")
+
+                conn.commit()
+                my_tree.delete(*my_tree.get_children())
+                fetch_to_tree()
 
             my_tree.bind("<ButtonRelease-1>",select_record)
 
 
             Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=650)
-            Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=select_record).place(x=135,y=650)
+            Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=650)
             Button(detail_frame_student, text="Delete Record", padx=5, pady=5).place(x=285,y=650)
 
         student_registration()
