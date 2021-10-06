@@ -45,9 +45,10 @@ class admin_GUI:
 
         gender = ["male","female"]
         styles = ["Waltz", "Jive", "ChaCha", "Samba"]
-        days = ["Monday","Sunday", "Tuesday", "Wednesday", "Thursday", "Friday" , "Saturday"]
+        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday" , "Saturday","Sunday"]
         genderInt = IntVar()
         selected_student_id = 0
+        selected_instructor_id = 0
 
 
 
@@ -379,44 +380,54 @@ class admin_GUI:
             fetch_to_tree()
 
             # select and fill the entry boxes
-            # def select_record(e):
-            #     stu_entry_firstname.delete(0, END)
-            #     stu_entry_lastname.delete(0, END)
-            #     stu_entry_email.delete(0, END)
-            #     stu_entry_dob.delete(0, END)
-            #     stu_entry_contact.delete(0, END)
-            #     stu_entry_address.delete(0, END)
-            #     stu_entry_hourly_rate.delete(0, END)
-            #
-            #     # grab record number
-            #     selected = my_tree.focus()
-            #     # grab record values
-            #     values = my_tree.item(selected, 'values')
-            #
-            #     # output to entries
-            #     stu_entry_firstname.insert(0, values[1])
-            #     stu_entry_lastname.insert(0, values[2])
-            #     stu_entry_email.insert(0, values[3])
-            #     stu_entry_dob.insert(0, values[5])
-            #     stu_entry_contact.insert(0, values[7])
-            #     stu_entry_address.insert(0, values[4])
-            #     stu_entry_hourly_rate.insert(0, values[9])
-            #     global selected_student_id
-            #     selected_student_id = values[0]
-            #     if values[6] == "Male":
-            #         genderInt.set(1)
-            #     else:
-            #         genderInt.set(0)
-            #
-            #     if values[8] == "Waltz":
-            #         cmb_styles.current(0)
-            #     elif values[8] == "Jive":
-            #         cmb_styles.current(1)
-            #     elif values[8] == "ChaCha":
-            #         cmb_styles.current(2)
-            #     elif values[8] == "Samba":
-            #         cmb_styles.current(3)
-            #
+            def select_instructor_record(e):
+                ins_entry_name.delete(0, END)
+                ins_entry_hrate.delete(0, END)
+                ins_entry_contact.delete(0, END)
+                ins_entry_password.delete(0, END)
+                global selected_instructor_id
+                # grab record number
+                selected = my_tree.focus()
+                # grab record values
+                values = my_tree.item(selected, 'values')
+                selected_instructor_id = values[0]
+                # output to entries
+                ins_entry_name.insert(0, values[1])
+                ins_entry_password.insert(0, values[2])
+                ins_entry_hrate.insert(0, values[7])
+                ins_entry_contact.insert(0, values[5])
+                # global selected_student_id
+                # selected_student_id = values[0]
+                if values[3] == "Male":
+                    genderInt.set(1)
+                else:
+                    genderInt.set(0)
+
+                if values[4] == "Waltz":
+                    cmb_styles.current(0)
+                elif values[4] == "Jive":
+                    cmb_styles.current(1)
+                elif values[4] == "ChaCha":
+                    cmb_styles.current(2)
+                elif values[4] == "Samba":
+                    cmb_styles.current(3)
+
+
+                if values[6] == "Monday":
+                    cmb_availability.current(0)
+                elif values[6] == "Tuesday":
+                    cmb_availability.current(1)
+                elif values[6] == "Wednesday":
+                    cmb_availability.current(2)
+                elif values[6] == "Thursday":
+                    cmb_availability.current(3)
+                elif values[6] == "Friday":
+                    cmb_availability.current(4)
+                elif values[6] == "Saturday":
+                    cmb_availability.current(5)
+                elif values[6] == "Sunday":
+                    cmb_availability.current(6)
+
 
             # adding students to the database
             def add_instructor_record():
@@ -454,48 +465,46 @@ class admin_GUI:
 
             # END adding students to the database
 
-            # def delete_student():
-            #     global selected_student_id
-            #     conn = sqlite3.connect('dance_feet.db')
-            #     c = conn.cursor()
-            #
-            #     c.execute(
-            #         f"DELETE FROM students WHERE student_id={selected_student_id}")
-            #     conn.commit()
-            #     my_tree.delete(*my_tree.get_children())
-            #     fetch_to_tree()
-            #
-            # def update_student():
-            #     conn = sqlite3.connect('dance_feet.db')
-            #     c = conn.cursor()
-            #
-            #     first_name = stu_entry_firstname.get()
-            #     lastname = stu_entry_lastname.get()
-            #     email = stu_entry_email.get()
-            #     gender = ''
-            #     dob = stu_entry_dob.get()
-            #     contact = stu_entry_contact.get()
-            #     address = stu_entry_address.get()
-            #     hrate = stu_entry_hourly_rate.get()
-            #     stu_style = cmb_styles.get()
-            #
-            #     if genderInt.get() == 1:
-            #         gender = "Male"
-            #     else:
-            #         gender = "Female"
-            #     global selected_student_id
-            #     c.execute(
-            #         f"UPDATE students SET first_name='{first_name}',last_name='{lastname}',email='{email}',dob='{dob}',contact='{contact}',address='{address}',gender='{gender}',style='{stu_style}',hrate='{hrate}' WHERE student_id='{selected_student_id}'")
-            #
-            #     conn.commit()
-            #     my_tree.delete(*my_tree.get_children())
-            #     fetch_to_tree()
-            #
-            # my_tree.bind("<Double 1>", select_record)
+            def delete_instructor():
+                global selected_instructor_id
+                conn = sqlite3.connect('dance_feet.db')
+                c = conn.cursor()
+                c.execute(
+                    f"DELETE FROM instructors WHERE ins_id='{selected_instructor_id}'")
+                conn.commit()
+                my_tree.delete(*my_tree.get_children())
+                fetch_to_tree()
+
+            def update_instructor():
+                global selected_instructor_id
+                conn = sqlite3.connect('dance_feet.db')
+                c = conn.cursor()
+                name = ins_entry_name.get()
+                password = ins_entry_password.get()
+                gender = ''
+                ins_style = cmb_styles.get()
+                contact = ins_entry_contact.get()
+                hrate = ins_entry_hrate.get()
+                ins_available = cmb_availability.get()
+
+                if genderInt.get() == 1:
+                    gender = "Male"
+                else:
+                    gender = "Female"
+
+                global selected_student_id
+                c.execute(
+                    f"UPDATE instructors SET name='{name}',password='{password}',gender='{gender}',styles='{ins_style}',contact='{contact}',available='{ins_available}',hrate='{hrate}' WHERE ins_id='{selected_instructor_id}'")
+
+                conn.commit()
+                my_tree.delete(*my_tree.get_children())
+                fetch_to_tree()
+
+            my_tree.bind("<Double 1>", select_instructor_record)
 
             Button(detail_frame_instructor, text="Add Record", padx=5, pady=5,command=add_instructor_record).place(x=5,y=680)
-            Button(detail_frame_instructor, text="Update Record", padx=5, pady=5,).place(x=135,y=680)
-            Button(detail_frame_instructor, text="Delete Record", padx=5, pady=5,).place(x=285,y=680)
+            Button(detail_frame_instructor, text="Update Record", padx=5, pady=5,command=update_instructor).place(x=135,y=680)
+            Button(detail_frame_instructor, text="Delete Record", padx=5, pady=5,command=delete_instructor).place(x=285,y=680)
 
         instructor_registration_tab()
 
