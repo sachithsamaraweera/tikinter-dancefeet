@@ -46,6 +46,7 @@ class admin_GUI:
         gender = ["male","female"]
         styles = ["Waltz", "Jive", "ChaCha", "Samba"]
         genderInt = IntVar()
+        selected_student_id = 0
 
 
 
@@ -176,7 +177,8 @@ class admin_GUI:
                 stu_entry_contact.insert(0,values[7])
                 stu_entry_address.insert(0,values[4])
                 stu_entry_hourly_rate.insert(0,values[9])
-
+                global selected_student_id
+                selected_student_id= values[0]
                 if values[6]=="Male":
                     genderInt.set(1)
                 else:
@@ -246,23 +248,24 @@ class admin_GUI:
                 address = stu_entry_address.get()
                 hrate = stu_entry_hourly_rate.get()
                 stu_style = cmb.get()
+
                 if genderInt.get()==1:
                     gender="Male"
                 else:
                     gender="Female"
-
-                c.execute(f"UPDATE students SET first_name='{first_name}',last_name='{lastname}',email='{email}',dob='{dob}',contact='{contact}',address='{address}',gender='{gender}',style='{stu_style}',hrate='{hrate}' WHERE email='{email}'")
+                global selected_student_id
+                c.execute(f"UPDATE students SET first_name='{first_name}',last_name='{lastname}',email='{email}',dob='{dob}',contact='{contact}',address='{address}',gender='{gender}',style='{stu_style}',hrate='{hrate}' WHERE student_id='{selected_student_id}'")
 
                 conn.commit()
                 my_tree.delete(*my_tree.get_children())
                 fetch_to_tree()
 
-            my_tree.bind("<ButtonRelease-1>",select_record)
+            my_tree.bind("<Double 1>",select_record)
 
 
-            Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=650)
-            Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=650)
-            Button(detail_frame_student, text="Delete Record", padx=5, pady=5).place(x=285,y=650)
+            Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=680)
+            Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=680)
+            Button(detail_frame_student, text="Delete Record", padx=5, pady=5).place(x=285,y=680)
 
         student_registration()
 
