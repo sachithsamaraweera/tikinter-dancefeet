@@ -235,6 +235,20 @@ class admin_GUI:
                     fetch_to_tree()
 # END adding students to the database
 
+
+            def delete_student():
+                global selected_student_id
+                conn = sqlite3.connect('dance_feet.db')
+                c = conn.cursor()
+
+                c.execute(
+                    f"DELETE FROM students WHERE student_id={selected_student_id}")
+                conn.commit()
+                my_tree.delete(*my_tree.get_children())
+                fetch_to_tree()
+
+
+
             def update_student():
                 conn = sqlite3.connect('dance_feet.db')
                 c = conn.cursor()
@@ -265,7 +279,7 @@ class admin_GUI:
 
             Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=680)
             Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=680)
-            Button(detail_frame_student, text="Delete Record", padx=5, pady=5).place(x=285,y=680)
+            Button(detail_frame_student, text="Delete Record", padx=5, pady=5,command=delete_student).place(x=285,y=680)
 
         student_registration()
 
