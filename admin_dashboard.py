@@ -20,9 +20,11 @@ class admin_GUI:
         tab1 = Frame(notebook)
         tab2 = Frame(notebook)
         tab3 = Frame(notebook)
+        tab4 = Frame(notebook)
         notebook.add(tab1, text="Student Registration")
         notebook.add(tab2, text="Instructor Registration")
         notebook.add(tab3, text="Lesson Booking")
+        notebook.add(tab4, text="Booked Lessons")
         notebook.pack(expand=True, fill="both")
 
         detail_frame_student =  LabelFrame(tab1,text="Enter details",font=("Arial",20),border=5,relief=SUNKEN)
@@ -52,7 +54,7 @@ class admin_GUI:
 
 
 
-
+        # Student Registration Starts
         def student_registration_tab():
             Label(detail_frame_student, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
             stu_entry_firstname=Entry(detail_frame_student, font=("calibri", 15))
@@ -96,7 +98,7 @@ class admin_GUI:
             stu_entry_hourly_rate.grid(row=8, column=1)
 
 
-# displaying the tree view
+            # displaying the student tree view
             my_tree = ttk.Treeview(preview_pane,height=36)
             # define columns
             my_tree['columns'] = (
@@ -282,11 +284,10 @@ class admin_GUI:
             Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=680)
             Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=680)
             Button(detail_frame_student, text="Delete Record", padx=5, pady=5,command=delete_student).place(x=285,y=680)
-
+        # Student Registration END
         student_registration_tab()
 
-
-
+        # Instructor registration Starts
         def instructor_registration_tab():
             Label(detail_frame_instructor, text="Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
             ins_entry_name=Entry(detail_frame_instructor, font=("calibri", 15))
@@ -505,17 +506,92 @@ class admin_GUI:
             Button(detail_frame_instructor, text="Add Record", padx=5, pady=5,command=add_instructor_record).place(x=5,y=680)
             Button(detail_frame_instructor, text="Update Record", padx=5, pady=5,command=update_instructor).place(x=135,y=680)
             Button(detail_frame_instructor, text="Delete Record", padx=5, pady=5,command=delete_instructor).place(x=285,y=680)
-
+        # Instructor registration END
         instructor_registration_tab()
 
 
+        def lesson_booking_tab():
+            Label(detail_frame_lesson_booking, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
+            stu_entry_firstname = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            stu_entry_firstname.grid(row=0, column=1)
 
-        # Button(top_frame,text="Student Management",padx=5,pady=5).pack(side="left")
-        # Button(top_frame,text="Instructor Management",padx=5,pady=5).pack(side="left")
-        # Button(top_frame,text="Book a Lesson",padx=5,pady=5).pack(side="left")
+            Label(detail_frame_lesson_booking, text="Last Name", font=("calibri", 15), padx=20, pady=20).grid(row=1, column=0)
+            stu_entry_lastname = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            stu_entry_lastname.grid(row=1, column=1)
+
+            Label(detail_frame_lesson_booking, text="Email", font=("calibri", 15), padx=20, pady=20).grid(row=2, column=0)
+            stu_entry_email = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            stu_entry_email.grid(row=2, column=1)
+
+            Label(detail_frame_lesson_booking, text="Contact No", font=("calibri", 15), padx=20, pady=20).grid(row=3, column=0)
+            stu_entry_contact = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            stu_entry_contact.grid(row=3, column=1)
+
+            Label(detail_frame_lesson_booking, text="Styles", font=("calibri", 15), padx=20, pady=20).grid(row=4, column=0)
+            cmb = ttk.Combobox(detail_frame_lesson_booking, value=styles, width=10, font=("calibri", 12))
+            cmb.grid(row=4, column=1)
+            cmb.current(0)
+
+            Label(detail_frame_lesson_booking, text="H/rate", font=("calibri", 15), padx=20, pady=20).grid(row=5, column=0)
+            stu_entry_hourly_rate = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            stu_entry_hourly_rate.grid(row=5, column=1)
 
 
 
+            # displaying the student tree view
+            my_tree = ttk.Treeview(preview_pane_lesson_booking, height=35)
+            # define columns
+            my_tree['columns'] = (
+                "Student ID", "First Name", "Last Name", "Email", "Contact No", "Style","H/rate","Instructor")
+
+            # format columns
+            my_tree.column("#0", width=0, stretch=NO)
+            my_tree.column("Student ID", anchor=CENTER, width=80)
+            my_tree.column("First Name", anchor=W, width=80)
+            my_tree.column("Last Name", anchor=W, width=80)
+            my_tree.column("Email", anchor=CENTER, width=120)
+            my_tree.column("Contact No", anchor=CENTER, width=120)
+            my_tree.column("Style", anchor=CENTER, width=80)
+            my_tree.column("H/rate", anchor=CENTER, width=80)
+            my_tree.column("Instructor", anchor=CENTER, width=80)
+
+            # creating heading
+            my_tree.heading("#0", text="", anchor=CENTER)
+            my_tree.heading("Student ID", text="Student ID", anchor=CENTER)
+            my_tree.heading("First Name", text="First Name", anchor=W)
+            my_tree.heading("Last Name", text="Last Name", anchor=W)
+            my_tree.heading("Email", text="Email", anchor=CENTER)
+            my_tree.heading("Contact No", text="Contact No", anchor=CENTER)
+            my_tree.heading("Style", text="Style", anchor=CENTER)
+            my_tree.heading("H/rate", text="H/rate", anchor=CENTER)
+            my_tree.heading("Instructor", text="Instructor", anchor=CENTER)
+            my_tree.place(x=20, y=20)
+
+            # select record from the treeview
+
+            # fetch from the database to the tree view
+            def fetch_to_tree():
+                conn = sqlite3.connect('dance_feet.db')
+                c = conn.cursor()
+                c.execute("SELECT * FROM students")
+                records = c.fetchall()
+
+                global count
+                count = 0
+
+                for record in records:
+                    my_tree.insert(parent='', index='end', iid=count, text="", values=(
+                        record[0], record[1], record[2], record[3], record[6], record[8], record[9], record[10]))
+                    count += 1
+
+                    conn.commit()
+
+            # END displaying the tree view
+
+            fetch_to_tree()
+
+
+        lesson_booking_tab()
         window.mainloop()
 
 

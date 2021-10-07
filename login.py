@@ -2,8 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from database_conn import create_db
 from admin_dashboard import admin_GUI
-create_db()
-
+import sqlite3
 
 
 
@@ -40,19 +39,18 @@ class login_GUI:
     def click(self):
         username = self.usernameEntry.get()
         password = self.passwordEntry.get()
-        create_db.c.execute(f"SELECT * from users WHERE username='{username}' AND password='{password}'")
-        records = create_db.c.fetchall()
-        create_db.c.close()
+        conn = sqlite3.connect('dance_feet.db')
+        c = conn.cursor()
+        c.execute(f"SELECT * from users WHERE username='{username}' AND password='{password}'")
+        records = c.fetchall()
+        c.close()
         if len(records)==1:
             if records[0][2]==1:
                 print("Student")
             elif records[0][2]==2:
-                ins_GUI()
-                print("Student")
-                self.window.destroy()
+                print("Instructor")
             elif records[0][2]==3:
-                admin_GUI()
-                self.window.destroy()
+                print("Admin")
         else:
             messagebox.showerror(title="Login Error",message="Username or Password is incorrect")
 
