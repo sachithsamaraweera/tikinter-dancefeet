@@ -511,7 +511,8 @@ class admin_GUI:
 
 
         def lesson_booking_tab():
-            dis_instructors= ['']
+            lesson_booking_student_id = 0
+            matching_instructors_count=0
             Label(detail_frame_lesson_booking, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
             lbooking_entry_firstname = Entry(detail_frame_lesson_booking, font=("calibri", 15))
             lbooking_entry_firstname.grid(row=0, column=1)
@@ -533,7 +534,9 @@ class admin_GUI:
             cmb_styles.grid(row=4, column=1)
             cmb_styles.current(0)
 
-
+            Label(detail_frame_lesson_booking, text="Instructor", font=("calibri", 15), padx=20, pady=20).grid(row=5,column=0)
+            cmb_instructors = ttk.Combobox(detail_frame_lesson_booking, width=10,font=("calibri", 12))
+            cmb_instructors.grid(row=5, column=1)
 
             Label(detail_frame_lesson_booking, text="H/rate", font=("calibri", 15), padx=20, pady=20).grid(row=6, column=0)
             lbooking_entry_hourly_rate = Entry(detail_frame_lesson_booking, font=("calibri", 15))
@@ -593,19 +596,19 @@ class admin_GUI:
 
             fetch_to_tree()
 
-            def select_books_records(e):
+            def select_booking_records(e):
                 lbooking_entry_email.delete(0, END)
                 lbooking_entry_lastname.delete(0, END)
                 lbooking_entry_contact.delete(0, END)
                 lbooking_entry_firstname.delete(0, END)
                 lbooking_entry_hourly_rate.delete(0, END)
 
-                # global selected_instructor_id
+
                 # grab record number
                 selected = my_tree.focus()
                 # grab record values
                 values = my_tree.item(selected, 'values')
-                # selected_instructor_id = values[0]
+
                 # output to entries
                 lbooking_entry_firstname.insert(0, values[1])
                 lbooking_entry_lastname.insert(0, values[2])
@@ -614,8 +617,9 @@ class admin_GUI:
                 lbooking_entry_hourly_rate.insert(0, values[6])
 
                 stu_hourly_rate = values[6]
-                # global selected_student_id
-                # selected_student_id = values[0]
+                global lesson_booking_student_id
+                global matching_instructors_count
+                lesson_booking_student_id= values[0]
 
                 lbooking_student_style = ""
 
@@ -636,26 +640,57 @@ class admin_GUI:
                 c = conn.cursor()
                 c.execute(f"SELECT name,hrate FROM instructors WHERE hrate<='{stu_hourly_rate}' AND styles='{lbooking_student_style}'")
                 records = c.fetchall()
-
-                print(records)
-
                 avail_instructors = []
                 if len(records) != 0:
+                    matching_instructors_count=1
                     for record in records:
                         avail_instructors.append(record[0])
                 else:
+                    matching_instructors_count=0
                     avail_instructors.append('None')
 
-                Label(detail_frame_lesson_booking, text="Instructor", font=("calibri", 15), padx=20, pady=20).grid(
-                    row=5, column=0)
-                cmb_instructors = ttk.Combobox(detail_frame_lesson_booking, value=avail_instructors, width=10,font=("calibri", 12))
-                cmb_instructors.grid(row=5, column=1)
+                cmb_instructors.configure(values=avail_instructors)
                 cmb_instructors.current(0)
-            my_tree.bind("<Double 1>", select_books_records)
 
-            Button(detail_frame_lesson_booking, text="Book Lesson", padx=5, pady=5).place(x=5,y=580)
-            Button(detail_frame_lesson_booking, text="Update Booked Lesson", padx=5, pady=5).place(x=120, y=580)
-            Button(detail_frame_lesson_booking, text="Remove Booked Lesson", padx=5, pady=5).place(x=285, y=580)
+            def add_lessons():
+                global lesson_booking_student_id
+                global matching_instructors_count
+
+                if matching_instructors_count!=0:
+                    conn = sqlite3.connect('dance_feet.db')
+                    c = conn.cursor()
+
+                    c.execute(f"UPDATE students SET instructor='{cmb_instructors.get()}' WHERE student_id='{lesson_booking_student_id}'")
+
+                    conn.commit()
+                    my_tree.delete(*my_tree.get_children())
+                    fetch_to_tree()
+                else:
+                    messagebox.showerror(title="Error", message="Unable to book a lesson - No matching instructors found")
+
+            def remove_booked_lessons():
+                    global lesson_booking_student_id
+                    global matching_instructors_count
+                    if matching_instructors_count != 0:
+                        conn = sqlite3.connect('dance_feet.db')
+                        c = conn.cursor()
+                        c.execute(f"UPDATE students SET instructor='None' WHERE student_id='{lesson_booking_student_id}'")
+
+                        conn.commit()
+                        my_tree.delete(*my_tree.get_children())
+                        fetch_to_tree()
+                    else:
+                        messagebox.showerror(title="Error",message="Cannot Remove booked lessons - No instructors was assigned")
+
+
+            my_tree.bind("<Double 1>", select_booking_records)
+
+
+
+
+            Button(detail_frame_lesson_booking, text="Book Lesson", padx=5, pady=5,command=add_lessons).place(x=5,y=580)
+            Button(detail_frame_lesson_booking, text="Remove Booked Lesson", padx=5, pady=5,command=remove_booked_lessons).place(x=120, y=580)
+
 
         lesson_booking_tab()
         window.mainloop()
