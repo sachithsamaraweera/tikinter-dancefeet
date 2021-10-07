@@ -511,30 +511,33 @@ class admin_GUI:
 
 
         def lesson_booking_tab():
+            dis_instructors= ['']
             Label(detail_frame_lesson_booking, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
-            stu_entry_firstname = Entry(detail_frame_lesson_booking, font=("calibri", 15))
-            stu_entry_firstname.grid(row=0, column=1)
+            lbooking_entry_firstname = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            lbooking_entry_firstname.grid(row=0, column=1)
 
             Label(detail_frame_lesson_booking, text="Last Name", font=("calibri", 15), padx=20, pady=20).grid(row=1, column=0)
-            stu_entry_lastname = Entry(detail_frame_lesson_booking, font=("calibri", 15))
-            stu_entry_lastname.grid(row=1, column=1)
+            lbooking_entry_lastname = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            lbooking_entry_lastname.grid(row=1, column=1)
 
             Label(detail_frame_lesson_booking, text="Email", font=("calibri", 15), padx=20, pady=20).grid(row=2, column=0)
-            stu_entry_email = Entry(detail_frame_lesson_booking, font=("calibri", 15))
-            stu_entry_email.grid(row=2, column=1)
+            lbooking_entry_email = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            lbooking_entry_email.grid(row=2, column=1)
 
             Label(detail_frame_lesson_booking, text="Contact No", font=("calibri", 15), padx=20, pady=20).grid(row=3, column=0)
-            stu_entry_contact = Entry(detail_frame_lesson_booking, font=("calibri", 15))
-            stu_entry_contact.grid(row=3, column=1)
+            lbooking_entry_contact = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            lbooking_entry_contact.grid(row=3, column=1)
 
             Label(detail_frame_lesson_booking, text="Styles", font=("calibri", 15), padx=20, pady=20).grid(row=4, column=0)
-            cmb = ttk.Combobox(detail_frame_lesson_booking, value=styles, width=10, font=("calibri", 12))
-            cmb.grid(row=4, column=1)
-            cmb.current(0)
+            cmb_styles = ttk.Combobox(detail_frame_lesson_booking, value=styles, width=10, font=("calibri", 12))
+            cmb_styles.grid(row=4, column=1)
+            cmb_styles.current(0)
 
-            Label(detail_frame_lesson_booking, text="H/rate", font=("calibri", 15), padx=20, pady=20).grid(row=5, column=0)
-            stu_entry_hourly_rate = Entry(detail_frame_lesson_booking, font=("calibri", 15))
-            stu_entry_hourly_rate.grid(row=5, column=1)
+
+
+            Label(detail_frame_lesson_booking, text="H/rate", font=("calibri", 15), padx=20, pady=20).grid(row=6, column=0)
+            lbooking_entry_hourly_rate = Entry(detail_frame_lesson_booking, font=("calibri", 15))
+            lbooking_entry_hourly_rate.grid(row=6, column=1)
 
 
 
@@ -590,6 +593,69 @@ class admin_GUI:
 
             fetch_to_tree()
 
+            def select_books_records(e):
+                lbooking_entry_email.delete(0, END)
+                lbooking_entry_lastname.delete(0, END)
+                lbooking_entry_contact.delete(0, END)
+                lbooking_entry_firstname.delete(0, END)
+                lbooking_entry_hourly_rate.delete(0, END)
+
+                # global selected_instructor_id
+                # grab record number
+                selected = my_tree.focus()
+                # grab record values
+                values = my_tree.item(selected, 'values')
+                # selected_instructor_id = values[0]
+                # output to entries
+                lbooking_entry_firstname.insert(0, values[1])
+                lbooking_entry_lastname.insert(0, values[2])
+                lbooking_entry_email.insert(0, values[3])
+                lbooking_entry_contact.insert(0, values[4])
+                lbooking_entry_hourly_rate.insert(0, values[6])
+
+                stu_hourly_rate = values[6]
+                # global selected_student_id
+                # selected_student_id = values[0]
+
+                lbooking_student_style = ""
+
+                if values[5] == "Waltz":
+                    cmb_styles.current(0)
+                    lbooking_student_style="Waltz"
+                elif values[5] == "Jive":
+                    cmb_styles.current(1)
+                    lbooking_student_style = "Jive"
+                elif values[5] == "ChaCha":
+                    cmb_styles.current(2)
+                    lbooking_student_style = "ChaCha"
+                elif values[5] == "Samba":
+                    cmb_styles.current(3)
+                    lbooking_student_style = "Samba"
+
+                conn = sqlite3.connect('dance_feet.db')
+                c = conn.cursor()
+                c.execute(f"SELECT name,hrate FROM instructors WHERE hrate<='{stu_hourly_rate}' AND styles='{lbooking_student_style}'")
+                records = c.fetchall()
+
+                print(records)
+
+                avail_instructors = []
+                if len(records) != 0:
+                    for record in records:
+                        avail_instructors.append(record[0])
+                else:
+                    avail_instructors.append('None')
+
+                Label(detail_frame_lesson_booking, text="Instructor", font=("calibri", 15), padx=20, pady=20).grid(
+                    row=5, column=0)
+                cmb_instructors = ttk.Combobox(detail_frame_lesson_booking, value=avail_instructors, width=10,font=("calibri", 12))
+                cmb_instructors.grid(row=5, column=1)
+                cmb_instructors.current(0)
+            my_tree.bind("<Double 1>", select_books_records)
+
+            Button(detail_frame_lesson_booking, text="Book Lesson", padx=5, pady=5).place(x=5,y=580)
+            Button(detail_frame_lesson_booking, text="Update Booked Lesson", padx=5, pady=5).place(x=120, y=580)
+            Button(detail_frame_lesson_booking, text="Remove Booked Lesson", padx=5, pady=5).place(x=285, y=580)
 
         lesson_booking_tab()
         window.mainloop()
