@@ -161,6 +161,15 @@ def lesson_booking_tab(detail_frame_lesson_booking,styles,preview_pane_lesson_bo
         else:
             messagebox.showerror(title="Error", message="Unable to book a lesson - No matching instructors found")
 
+    def refresh():
+        lbooking_entry_email.delete(0, END)
+        lbooking_entry_lastname.delete(0, END)
+        lbooking_entry_contact.delete(0, END)
+        lbooking_entry_firstname.delete(0, END)
+        lbooking_entry_hourly_rate.delete(0, END)
+        my_tree.delete(*my_tree.get_children())
+        fetch_to_tree()
+
     def remove_booked_lessons():
         global lesson_booking_student_id
         global matching_instructors_count
@@ -179,4 +188,5 @@ def lesson_booking_tab(detail_frame_lesson_booking,styles,preview_pane_lesson_bo
 
     Button(detail_frame_lesson_booking, text="Book Lesson", padx=5, pady=5, command=add_lessons).place(x=5, y=580)
     Button(detail_frame_lesson_booking, text="Remove Booked Lesson", padx=5, pady=5,command=remove_booked_lessons).place(x=120, y=580)
+    Button(detail_frame_lesson_booking, text="Refresh", padx=5, pady=5,command=refresh).place(x=300, y=580)
 

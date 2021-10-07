@@ -50,7 +50,8 @@ class login_GUI:
             elif records[0][2]==2:
                 print("Instructor")
             elif records[0][2]==3:
-                print("Admin")
+                self.window.destroy()
+                admin_GUI()
         else:
             messagebox.showerror(title="Login Error",message="Username or Password is incorrect")
 

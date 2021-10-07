@@ -200,6 +200,17 @@ def student_registration_tab(detail_frame_student,styles,preview_pane,genderInt)
                 my_tree.delete(*my_tree.get_children())
                 fetch_to_tree()
 
+            def refresh():
+                stu_entry_firstname.delete(0, END)
+                stu_entry_firstname.delete(0, END)
+                stu_entry_lastname.delete(0, END)
+                stu_entry_email.delete(0, END)
+                stu_entry_dob.delete(0, END)
+                stu_entry_contact.delete(0, END)
+                stu_entry_address.delete(0, END)
+                stu_entry_hourly_rate.delete(0, END)
+                my_tree.delete(*my_tree.get_children())
+                fetch_to_tree()
 
 
             def update_student():
@@ -230,6 +241,7 @@ def student_registration_tab(detail_frame_student,styles,preview_pane,genderInt)
             my_tree.bind("<Double 1>",select_record)
 
 
-            Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=680)
-            Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=680)
-            Button(detail_frame_student, text="Delete Record", padx=5, pady=5,command=delete_student).place(x=285,y=680)
+            Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=620)
+            Button(detail_frame_student, text="Refresh", padx=5, pady=5,command=refresh).place(x=140,y=670)
+            Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=620)
+            Button(detail_frame_student, text="Delete Record", padx=5, pady=5,command=delete_student).place(x=285,y=620)
