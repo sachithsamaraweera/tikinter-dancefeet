@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 from database_conn import create_db
 from admin_dashboard import admin_GUI
+from instructor_dashboard import instructor_GUI
 import sqlite3
-
 
 
 class login_GUI:
@@ -27,14 +27,9 @@ class login_GUI:
         self.passwordEntry.grid(row=3, column=1)
 
         Button(self.window, text="Login", font=("Ariel", 15),command=self.click).place(x=400, y=260)
-        Button(self.window, text="Direct login", font=("Ariel", 15),command=self.direct).place(x=400, y=350)
+
 
         self.window.mainloop()
-
-    #this is for testing purpose only
-    def direct(self):
-        admin_GUI()
-        self.window.destroy()
 
     def click(self):
         username = self.usernameEntry.get()
@@ -48,13 +43,12 @@ class login_GUI:
             if records[0][2]==1:
                 print("Student")
             elif records[0][2]==2:
-                print("Instructor")
+                self.window.destroy()
+                instructor_GUI()
             elif records[0][2]==3:
                 self.window.destroy()
                 admin_GUI()
         else:
             messagebox.showerror(title="Login Error",message="Username or Password is incorrect")
-
-
 
 login_GUI()

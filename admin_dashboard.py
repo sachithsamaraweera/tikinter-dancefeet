@@ -1,7 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-from database_conn import create_db
-from tkinter import messagebox
 import sqlite3
 import lessonbooking
 import  student_registration
