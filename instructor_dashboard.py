@@ -10,7 +10,7 @@ class instructor_GUI:
         self.window.geometry("1400x1000")
         self.window.title("Instructor")
 
-        title = Label(self.window,text="DanceFeet Instructor Login",font=("Arial",25),border=5,relief=SUNKEN,bg="#F5C2C1")
+        title = Label(self.window,text="DanceFeet Instructor Login",font=("Arial",25),border=5,relief=SUNKEN,bg="#A4EBF3")
         title.pack(side=TOP,fill=X)
 
         mainframe = Frame(self.window,border=5,relief=SUNKEN)
@@ -63,6 +63,14 @@ class instructor_GUI:
         lbooking_entry_hourly_rate.grid(row=6, column=1)
 
         # displaying the student tree view
+        style = ttk.Style()
+        style.configure("Treeview",
+                        background="white",
+                        foreground="black",
+                        rowheight=25,
+                        fieldbackground="black"
+                        )
+        style.map('Treeview', background=[('selected', '#4C4C6D')], foreground=[('selected', 'white')])
         my_tree = ttk.Treeview(preview_pane_instructor_login, height=35)
         # define columns
         my_tree['columns'] = (
@@ -102,13 +110,11 @@ class instructor_GUI:
 
             global count
             count = 0
-
+            my_tree.tag_configure('oddrow', background="#A2DBFA")
+            my_tree.tag_configure('even', background="#C0FEFC")
             for record in records:
-                my_tree.insert(parent='', index='end', iid=count, text="", values=(
-                    record[0], record[1], record[2], record[3], record[6], record[8], record[9], record[10]))
+                my_tree.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1], record[2], record[3], record[6], record[8], record[9], record[10]))
                 count += 1
-
-                conn.commit()
 
         # END displaying the tree view
 

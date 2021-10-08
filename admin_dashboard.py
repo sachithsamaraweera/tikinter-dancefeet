@@ -10,7 +10,7 @@ class admin_GUI:
         window.geometry("1400x1000")
         window.title("Admin")
 
-        title = Label(window,text="DanceFeet Management",font=("Arial",25),border=5,relief=SUNKEN,bg="#F5C2C1")
+        title = Label(window,text="DanceFeet Management",font=("Arial",25),border=5,relief=SUNKEN,bg="#A4EBF3")
         title.pack(side=TOP,fill=X)
 
         mainframe = Frame(window,border=5,relief=SUNKEN)

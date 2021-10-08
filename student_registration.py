@@ -5,6 +5,8 @@ import sqlite3
 from database_conn import create_db
 
 def student_registration_tab(detail_frame_student,styles,preview_pane,genderInt):
+            message = Label(detail_frame_student,font=("Arial", 12), fg="green").place(x=20, y=730)
+
             Label(detail_frame_student, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0, column=0)
             stu_entry_firstname=Entry(detail_frame_student, font=("calibri", 15))
             stu_entry_firstname.grid(row=0, column=1)
@@ -48,6 +50,14 @@ def student_registration_tab(detail_frame_student,styles,preview_pane,genderInt)
 
 
             # displaying the student tree view
+            style = ttk.Style()
+            style.configure("Treeview",
+                            background="white",
+                            foreground="black",
+                            rowheight=25,
+                            fieldbackground="black"
+                            )
+            style.map('Treeview',background=[('selected','#1E3163')])
             my_tree = ttk.Treeview(preview_pane,height=36)
             # define columns
             my_tree['columns'] = (
@@ -91,17 +101,12 @@ def student_registration_tab(detail_frame_student,styles,preview_pane,genderInt)
                 c.execute("SELECT * FROM students")
                 records = c.fetchall()
 
+
                 global count
                 count = 0
-
                 for record in records:
-                    my_tree.insert(parent='', index='end', iid=count, text="", values=(
-                        record[0], record[1], record[2], record[3], record[7], record[5], record[4], record[6],
-                        record[8],
-                        record[9]))
+                    my_tree.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1], record[2], record[3], record[7], record[5], record[4], record[6],record[8],record[9]))
                     count += 1
-
-                    conn.commit()
 
 # END displaying the tree view
 
@@ -209,6 +214,7 @@ def student_registration_tab(detail_frame_student,styles,preview_pane,genderInt)
                 stu_entry_contact.delete(0, END)
                 stu_entry_address.delete(0, END)
                 stu_entry_hourly_rate.delete(0, END)
+
                 my_tree.delete(*my_tree.get_children())
                 fetch_to_tree()
 
@@ -242,6 +248,7 @@ def student_registration_tab(detail_frame_student,styles,preview_pane,genderInt)
 
 
             Button(detail_frame_student, text="Add Record", padx=5, pady=5,command=add_student_record).place(x=5,y=620)
-            Button(detail_frame_student, text="Refresh", padx=5, pady=5,command=refresh).place(x=140,y=670)
+            Button(detail_frame_student, text="Refresh", padx=5, pady=5,command=refresh).place(x=150,y=670)
             Button(detail_frame_student, text="Update Record", padx=5, pady=5,command=update_student).place(x=135,y=620)
             Button(detail_frame_student, text="Delete Record", padx=5, pady=5,command=delete_student).place(x=285,y=620)
+
