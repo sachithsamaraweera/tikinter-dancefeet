@@ -33,7 +33,6 @@ def instructor_registration_tab(detail_frame_instructor,styles,preview_pane_inst
     ins_entry_hrate =Entry(detail_frame_instructor, font=("calibri", 15))
     ins_entry_hrate.grid(row=5, column=1)
 
-
     Label(detail_frame_instructor, text="Availability", font=("calibri", 15), padx=20, pady=20).grid(row=6 ,column=0)
     cmb_availability = ttk.Combobox(detail_frame_instructor, value=days, width=10, font=("calibri", 12))
     cmb_availability.grid(row=6, column=1)
@@ -165,6 +164,10 @@ def instructor_registration_tab(detail_frame_instructor,styles,preview_pane_inst
         else:
             create_db.c.execute(
                 f"INSERT INTO instructors('name','password','gender','styles','contact','available','hrate') VALUES('{name}','{password}','{gender}','{ins_style}','{contact}','{ins_available}','{hrate}')")
+            create_db.conn.commit()
+
+            create_db.c.execute(
+                f"INSERT INTO users('username','password','level') VALUES('{name}','{password}','2')")
             create_db.conn.commit()
 
             ins_entry_name.delete(0, END)

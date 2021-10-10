@@ -3,7 +3,7 @@ from tkinter import ttk
 import sqlite3
 from tkinter import messagebox
 
-
+# initializing instructor class
 class instructor_GUI:
     def __init__(self):
         self.window = Tk()
@@ -23,12 +23,15 @@ class instructor_GUI:
         preview_pane_instructor_login.place(x=420,y=60,width=1000,height=800)
 
 
-
+        #define values for radio buttons
         gender = ["male","female"]
+        #define values for combobox
         styles = ["Waltz", "Jive", "ChaCha", "Samba"]
 
         lesson_booking_student_id = 0
         matching_instructors_count = 0
+
+        # Creating user interface for instructor details
         Label(detail_frame_instructor_login, text="First Name", padx=20, pady=20, font=("calibri", 15)).grid(row=0,
                                                                                                            column=0)
         lbooking_entry_firstname = Entry(detail_frame_instructor_login, font=("calibri", 15))
@@ -120,6 +123,7 @@ class instructor_GUI:
 
         fetch_to_tree()
 
+        #Select the record from the tree view
         def select_booking_records(e):
 
             lbooking_entry_email.delete(0, END)
@@ -144,7 +148,6 @@ class instructor_GUI:
             global lesson_booking_student_id
             global matching_instructors_count
             lesson_booking_student_id = values[0]
-
             lbooking_student_style = ""
 
             if values[5] == "Waltz":
@@ -173,10 +176,10 @@ class instructor_GUI:
             else:
                 matching_instructors_count = 0
                 avail_instructors.append('None')
-
             cmb_instructors.configure(values=avail_instructors)
             cmb_instructors.current(0)
 
+        #add instructor to student
         def add_lessons():
             global lesson_booking_student_id
             global matching_instructors_count
@@ -195,6 +198,7 @@ class instructor_GUI:
             else:
                 messagebox.showerror(title="Error", message="Unable to book a lesson - No matching instructors found")
 
+        # Refresh the instructor treeview
         def refresh():
             lbooking_entry_email.delete(0, END)
             lbooking_entry_lastname.delete(0, END)
@@ -204,6 +208,7 @@ class instructor_GUI:
             my_tree.delete(*my_tree.get_children())
             fetch_to_tree()
 
+        # Remove the selected Instr
         def remove_booked_lessons():
             global lesson_booking_student_id
             global matching_instructors_count

@@ -15,9 +15,8 @@ class create_db:
     username = 'admin'
     c.execute(f"SELECT * from users WHERE username='{username}'")
     records = c.fetchall()
-    print(records)
     if len(records) == 0:
         c.execute("INSERT INTO users VALUES('admin','123','3')")
         conn.commit()
     else:
-        print("the admin login data is already exist")
+        print("the admin login data is already exist. Executing")
